@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script crossorigin="" type="text/javascript" src="https://codesandbox.io/static/js/vendors~app~embed~sandbox-startup.10f5f18b4.chunk.js"></script>
+        <script crossorigin="" type="text/javascript" src="https://codesandbox.io/static/js/sandbox-startup.3c5563fd5.js"></script>
+        <script src="https://codesandbox.io/static/browserfs8/browserfs.min.js" type="text/javascript"></script>
+        <script>
+            window.process = BrowserFS.BFSRequire('process');
+            window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+        </script>
+        <title>Calender</title>
+        <meta charset="UTF-8">
+        <link rel="manifest" href="/manifest.json">
+        <style id="/src/styles.css:-css" type="text/css">body {
+            font-family:sans-serif;
+            font-weight: 9999;
+            --grey-100: #e4e9f0;
+            --grey-200: #cfd7e3;
+            --grey-300: #b5c0cd;
+            --grey-800: #3e4e63;
+            --grid-gap: 2px;
+            --day-label-size: 20px;
+            
+        }
+
+            ol,
+            li {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+            }
+
+            
+
+
+            .calendar-month {
+                position: relative;
+                background-color: var(--grey-200);
+                border: solid 1px var(--grey-200);
+            }
+
+            .calendar-month-header {
+                display: flex;
+                justify-content: space-between;
+                background-color: #fff;
+                padding: 10px;
+            }
+
+            .calendar-month-header-selected-month {
+                font-size: 24px;
+                font-weight: 600;
+            }
+
+            .calendar-month-header-selectors {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 80px;
+            }
+
+            .calendar-month-header-selectors > * {
+                cursor: pointer;
+            }
+
+            .day-of-week {
+                color: var(--grey-800);
+                font-size: 18px;
+                background-color: #fff;
+                padding-bottom: 5px;
+                padding-top: 10px;
+            }
+
+            .day-of-week,
+            .days-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+            }
+            
+            .day-of-week > * {
+                text-align: right;
+                padding-right: 5px;
+            }
+
+            .days-grid {
+                height: 100%;
+                position: relative;
+                grid-column-gap: var(--grid-gap);
+                grid-row-gap: var(--grid-gap);
+                border-top: solid 1px var(--grey-200);
+            }
+
+            .calendar-day {
+                position: relative;
+                min-height: 100px;
+                font-size: 16px;
+                background-color: #fff;
+                color: var(--grey-800);
+                padding: 5px;
+            }
+
+            .calendar-day > span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: absolute;
+                right: 2px;
+                width: var(--day-label-size);
+                height: var(--day-label-size);
+            }
+
+            .calendar-day--not-current {
+                background-color: var(--grey-100);
+                color: var(--grey-300);
+                background-image: url('未命名.png');
+                background-size: cover;
+            }
+
+            .calendar-day--today {
+                padding-top: 4px;
+            }
+
+            .calendar-day--today > span {
+                color: #fff;
+                border-radius: 9999px;
+                background-color: var(--grey-800);
+            }
+            
+             .button {
+                background-color: #4CAF50;
+                width:100%;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                }
+            
+             .button1:hover {
+                background-color: #45a049;
+                color: white;
+                }
+            
+            .div1 {
+                width:  100%;
+                height: 500px;
+                border: 2px solid black;
+                }
+            
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: auto auto auto auto;
+                background-color: #fff;
+                padding: 10px;
+                }   
+            
+            .grid-item1 {
+                background-color: rgba(255, 255, 255, 0.8);
+                border: 1px solid rgba(0, 0, 0, 0.8);
+                padding: 20px;
+                font-size: 30px;
+                text-align: center;
+                }
+            
+            .grid-item2 {
+                background-color:#4CAF50;
+                border: 1px solid rgba(0, 0, 0, 0.8);
+                padding: 20px;
+                font-size: 30px;
+                color:white;
+                text-align: center;
+                }
+            
+.hot
+{ 
+    position: absolute;
+    top:0%;
+    left:0%;
+    width:110px;
+    height:110px;
+    border-radius:0%;
+    z-index:0;
+    background:linear-gradient( to top right, rgba(255,87,34,1) 0%,
+    rgba(251,140,0 ,1) 100%);
+    background-size: cover;
+    box-shadow: 1px 1px 30px rgba(255,111,0 ,1);
+}
+.sun
+{
+    position: absolute;
+    top:0%;
+    left:49%;
+    width:25px;
+    height: 25px;
+    z-index:1;
+    border-radius: 100%;
+    background:linear-gradient( to bottom left, rgba(255,235,59,1) 0%,
+    rgba(249,168,37 ,1) 90%);
+    box-shadow: 1px 1px 30px rgba(255,160,0 ,1);
+    animation: inex 3s infinite linear ;
+    
+}
+
+.sunx
+{
+    position: absolute;
+    top:5%;
+    left:48%;
+    width:10px;
+    height: 10px;
+    z-index:2;
+    border-radius: 100%;
+    background-color: #fff;
+    opacity:0.2;
+}
+.cloudy
+{ position: absolute;
+    top:0%;
+    left:0%;
+    width:110px;
+    height:110px;
+    border-radius:0%;
+    z-index:0;
+    background:linear-gradient( to top right, rgba(63,81,181,1) 0%,
+    rgba(3,155,229 ,1) 40%);
+    background-size: cover;
+    box-shadow: 1px 1px 30px rgba(2,119,189 ,1);
+
+}
+.cloud
+{
+position: absolute;
+    top:10%;
+    left:65%;
+    width:60px;
+    height: 20px;
+    z-index:1;
+    border-radius:10px;
+    background-color: rgba(129,212,250 ,1);
+    box-shadow: 1px 1px 30px rgba(0,151,167 ,1);
+    animation: move 3s infinite linear ;
+    opacity:0.8;
+
+}
+.cloudx
+{
+    position: absolute;
+    top:0%;
+    left:45%;
+    width:60px;
+    height: 20px;
+    border-radius:10px;
+    z-index:2;
+    background-color: rgba(129,212,250 ,1);
+    animation: move 3s infinite linear ;
+    opacity:0.3;
+
+}
+.stormy
+{
+     position: absolute;
+    top:0%;
+    left:0%;
+    width:110px;
+    height:110px;
+    border-radius:0%;
+    z-index:0;
+    background:linear-gradient( to top right,rgba(117,117,117 ,1) 0%,
+    rgba(33,33,33 ,1) 90%);
+    box-shadow: 1px 1px 30px rgba(33,33,33 ,1);
+}
+.stormy li
+{
+    position: absolute;
+    list-style: none;
+    width: 5px;
+    height: 5px;
+    border-radius: 100%;
+    background-color:#777;
+    box-shadow: 1px 1px 30px #555;
+    animation: fall 3s infinite linear ;
+opacity:0;
+}
+.stormy li:nth-child(1)
+{
+    
+top:0%;
+left:100%;
+}
+
+.stormy li:nth-child(2)
+{
+top:5%;
+left:90%;
+}
+
+.stormy li:nth-child(3)
+{
+top:-10%;
+left:80%;
+animation-delay: 2s;
+}
+
+.stormy li:nth-child(4)
+{
+top:10%;
+left:100%;
+animation-delay: 2s;
+}
+
+.stormy li:nth-child(5)
+{
+top:20%;
+left:80%;
+animation-delay: 0.5s;
+}
+
+.stormy li:nth-child(6)
+{
+top:35%;
+left:70%;
+background-color: #bbb;
+animation-delay: 0.5s;
+}
+
+
+.stormy li:nth-child(7)
+{
+top:23%;
+left:60%;
+background-color: #bbb;
+animation-delay: 0.8s;
+}
+
+.stormy li:nth-child(8)
+{
+top:5%;
+left:70%;
+background-color: #bbb;
+animation-delay: 0.8s;
+}
+.snowe
+{
+position: absolute;
+    top:60%;
+    left:40%;
+    width:40px;
+    height: 40px;
+    border-radius:60px;
+    background-color: #ddd;
+    
+
+}
+.snowex
+{
+    position: absolute;
+    top:50%;
+    left:50%;
+    width:15px;
+    height: 15px;   
+    border-radius:15px;
+    background-color: #bbb;
+
+}
+.stick
+{
+    position: absolute;
+    top:60%;
+    left:40%;
+    width:3px;
+    height: 15px;   
+    transform: rotate(-45deg);
+    background-color: #333;
+z-index: -10;
+}
+.stick2
+{
+    position: absolute;
+    top:60%;
+    left:70%;
+    width:3px;
+    height: 15px;   
+    transform: rotate(45deg);
+    background-color: #333;
+z-index: -10;
+}
+.breezy
+{
+    position: absolute;
+    top:0%;
+    left:0%;
+    width:110px;
+    height:110px;
+    border-radius:0%;
+    z-index:0;
+    background:linear-gradient( to top right,rgba(156,204,101 ,1) 0%,
+    rgba(38,198,218 ,1) 50%);
+    box-shadow: 1px 1px 30px rgba(38,198,218 ,1);
+
+}
+.cloudr
+{
+position: absolute;
+    top:5%;
+    left:60%;
+    width:60px;
+    height: 20px;
+    border-radius:10px;
+    z-index:4;
+    background-color: rgba(96,125,139 ,1);
+    box-shadow: 1px 1px 30px rgba(84,110,122 ,1);
+animation: flash 1.5s infinite linear;
+
+}
+
+.breezy li
+{
+    position: absolute;
+    list-style: none;
+    width: 2px;
+    height: 7px;
+    border-radius: 10%;
+    background-color:#eee;
+    opacity:0;
+    animation: fall 3s infinite linear ;
+    transform: rotate(25deg);
+}
+.breezy li:nth-child(1)
+{
+    
+top:10%;
+left:95%;
+}
+
+.breezy li:nth-child(2)
+{
+top:5%;
+left:83%;
+animation-delay:0.3s;
+}
+
+.breezy li:nth-child(3)
+{
+top:4%;
+left:87%;
+animation-delay:0.6s;
+}
+
+.breezy li:nth-child(4)
+{
+top:15%;
+left:70%;
+animation-delay:1s;
+}
+
+.breezy li:nth-child(5)
+{
+top:10%;
+left:75%;
+}
+
+.night
+{
+    position: absolute;
+    top:0%;
+    left:0%;
+    width:110px;
+    height:110px;
+    border-radius:0%;
+    z-index:0;
+    background:linear-gradient( to bottom right,rgba(63,81,181,1) 0%,
+    rgba(171,71,188 ,1) 70%);
+    box-shadow: 1px 1px 30px rgba(81,45,168 ,1);
+
+}
+.moon
+{
+    position: absolute;
+    top:0%;
+    left:65%;
+    width:30px;
+    height:30px;
+    border-radius: 100%;
+    z-index:1;
+    background:rgba(255,241,118 ,1);
+    box-shadow: 1px 1px 30px rgba(224,224,224 ,1);
+    opacity:0.3;
+}
+.spot1
+{
+    position: absolute;
+    top:0%;
+    left:85%;
+    width:10px;
+    height: 10px;
+    border-radius: 100%;
+    background-color: #777;
+}
+.spot2
+{
+    position: absolute;
+    top:30%;
+    left:75%;
+    width:5px;
+    height: 5px;
+    border-radius: 100%;
+    background-color: #777;
+}
+
+.night li
+{
+    position: absolute;
+    list-style: none;
+    width: 3px;
+    height: 3px;
+    border-radius: 100%;
+    background-color:#fff;
+    
+    
+    transform: rotate(45deg);
+}
+.night li:nth-child(1)
+{
+    
+top:30%;
+left:65%;
+}
+
+.night li:nth-child(2)
+{
+top:35%;
+left:53%;
+}
+
+.night li:nth-child(3)
+{
+
+opacity: 0;
+top:20%;
+left:75%;
+width:2px;
+height: 2px;
+animation: meteor 1.5s infinite linear;
+animation-delay: 0.6s;
+
+}
+
+.night li:nth-child(4)
+{
+top:5%;
+left:50%;
+}
+
+.night li:nth-child(5)
+{
+opacity: 0;
+top:20%;
+left:55%;
+width:1px;
+height: 15px;
+animation: meteor 1.5s infinite linear;
+}
+            
+.day-number {
+  font-size: 24px;
+  letter-spacing: 1.5px;
+}
+            
+.div-relative{position:relative;color:#000;border:1px solid #000;width:110px;height:110px} 
+
+@keyframes inex {
+
+
+    50% {
+    opacity: 0.4;
+
+    }
+    60%
+    {
+        opacity: 1;
+    }
+}
+@keyframes move {
+
+
+    50% {
+    transform: translateX(-10px);
+
+    }
+}
+@keyframes fall {
+10%
+{
+    opacity:0.8;
+}
+
+    50% {
+        opacity:1;
+    transform: translate(-10px,30px);
+
+    }
+    100%
+    {
+        transform: translate(-25px,70px);
+
+        
+    }
+}
+@keyframes flash
+{
+    48% 
+    {
+        background-color: rgba(96,125,139 ,1);
+    }
+    50%
+    {
+        background-color: #fff;
+    }
+    55%
+    {
+        background-color: rgba(96,125,139 ,1);
+    }
+    57%
+    {
+        background-color: #fff; 
+    }
+}
+@keyframes meteor
+{
+
+10%
+{opacity: 1;
+}
+80% 
+{
+left:10%;
+top:75%;
+opacity: 0;
+}
+}
+        </style>
+        <script>
+            $( document ).ready(function() {
+               $("#menu ul li").click(function(){
+                  alert(this.id);
+               });
+            });
+        </script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            function handleClick(evt) {
+              var node = evt.target || evt.srcElement;
+              if (node.name == 'edit') {
+                node.value = "Modify";
+              }
+            }
+
+        </script>
+        <div id="app">
+            <div class="calendar-month">
+                <section class="calendar-month-header">
+                    <div id="selected-month" class="calendar-month-header-selected-month">October 2020</div>
+                    <section class="calendar-month-header-selectors">
+                        <span id="previous-month-selector">&lt;</span>
+                        <span id="present-month-selector">Today</span>
+                        <span id="next-month-selector">&gt;</span>
+                    </section>
+                </section>
+                <ol id="days-of-week" class="day-of-week">
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wed</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                </ol>
+                
+                <ol id="calendar-days" class="days-grid">
+                    <li class="calendar-day calendar-day--not-current">
+                        <span>28</span>
+                    </li>
+                    <li class="calendar-day calendar-day--not-current">
+                        <span>29</span>
+                    </li>
+                    <li class="calendar-day calendar-day--not-current">
+                        <span>30</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=1'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="hot"></div>
+                        <span>1</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=2'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="hot"></div>
+                        <span>2</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=3'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="cloudy"></div>
+                        <span>3</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=4'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="cliudr"></div>
+                        <div class="cloudy"></div>
+                        <span>4</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=5'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="cliudr"></div>
+                        <div class="stormy"></div>
+                        <div class="night"></div>
+                        <span>5</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=6'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="cloudr"></div>
+                        <div class="stormy"></div>
+                        <span>6</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=7'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="breezy"></div>
+                        <span>7</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=8'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="hot"></div>
+                        <span>8</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=9'">
+                        <div class="cloud"></div>
+                        <div class="breezy"></div>
+                        <span>9</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=10'">
+                        <div class="moon"></div>
+                        <div class="night"></div>
+                        <span>10</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=11'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>11</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=12'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="hot"></div>
+                        <span>12</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=13'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="cloudy"></div>
+                        <span>13</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=14'">
+                        <div class="sun"></div>
+                        <div class="cloudy"></div>
+                        <span>14</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=15'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="cloudr"></div>
+                        <div class="stormy"></div>
+                        <span>15</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=16'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="cloudr"></div>
+                        <div class="stormy"></div>
+                        <span>16</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=17'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="cloudr"></div>
+                        <div class="stormy"></div>
+                        <span>17</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=18'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>18</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=19'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="hot"></div>
+                        <span>19</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=20'">
+                        <div class="cloud"></div>
+                        <div class="breezy"></div>
+                        <span>20</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=21'">
+                        <div class="cloud"></div>
+                        <div class="breezy"></div>
+                        <span>21</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=22'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>22</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=23'">
+                        <div class="cloud"></div>
+                        <div class="breezy"></div>
+                        <span>23</span
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=24'">
+                        <div class="cloud"></div>
+                        <div class="breezy"></div>
+                        <span>24</span>
+                    </li>
+                    <li class="calendar-day calendar-day-today" onclick="window.location='/bill?date=25'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>25</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=26'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>26</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=27'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>27</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=28'">
+                        <div class="cloud"></div>
+                        <div class="cloudr"></div>
+                        <div class="stormy"></div>
+                        <span>28</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=29'">
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="stormy"></div>
+                        <span>29</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=30'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>30</span>
+                    </li>
+                    <li class="calendar-day" onclick="window.location='/bill?date=31'">
+                        <div class="sun"></div>
+                        <div class="sunx"></div>
+                        <div class="cloud"></div>
+                        <div class="cloudx"></div>
+                        <div class="breezy"></div>
+                        <span>31</span>
+                    </li>
+                    <li class="calendar-day calendar-day--not-current">
+                        <span>1</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+            <div class="grid-container">
+                <div class="grid-item2" >日期</div>
+                <div class="grid-item2" >時間</div>
+                <div class="grid-item2" >活動</div>
+                <div class="grid-item2" >是否參加</div>
+                <div class="grid-item1" >10/17</div>
+                <div class="grid-item1" >11AM</div>
+                <div class="grid-item1" >工作坊</div>
+                <div class="grid-item1" >是</div>
+                <div class="grid-item1" >10/24</div>
+                <div class="grid-item1" >09AM</div>
+                <div class="grid-item1" >梅竹黑客松</div>
+                <div class="grid-item1" >是</div>
+
+                
+                
+    <!--   tbody>
+            <tr>
+            <th>name</th><th>id</th>
+            </tr>
+            <%
+               row.forEach( function(d) {
+            %>
+            <tr>
+                <td><%= d['name'] %></td>
+                <td><%= d['id'] %> </td>
+               
+            <select id="join_or_not" name="join_or_not">
+                <option value="NULL">請選擇</option>
+                <option value="YES">參加</option>
+                <option value="NO">不參加</option>
+            </select>
+                </tr>
+               <% }); %>
+            </tbody> -->
+                </div>
+            
+            <a href="create/"  class="button button1">Create</a>
+        
+    </body>
+</html>
