@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const myLiffId = process.env.MY_LIFF_ID;
+const path = require('path')
 
 app.use(express.static('public'));
 
@@ -21,7 +22,7 @@ if(!exists) {
 
 var sqlite3 = require("sqlite3").verbose();
 
-var __dirname = "C:\\Users\\CJLin\\Desktop\\Calendar\\"
+// var __dirname = "C:\\Users\\CJLin\\Desktop\\Calendar\\"
 
 app.use(bodyParser.urlencoded({extended:true}))
 
@@ -29,6 +30,7 @@ app.use(express.static('public'));
 
 
 
+const resolve = (page) => path.join(__dirname, 'calendar', `${page}.html`)
 
 
 
@@ -36,33 +38,33 @@ app.use(express.static('public'));
 
 app.get('/calendar', function(req, res) {
 	
-	var Name = "Peter"
-	var data = {'row':[]}
+	// var Name = "Peter"
+	// var data = {'row':[]}
 
-    var db = new sqlite3.Database(file);
-	db.serialize(() => {
-		db.each(`SELECT V.name, V.id 
-            FROM V, P
-            WHERE V.id=P.id AND P.participant=(?)`,[Name], function(err, row) {
+ //    var db = new sqlite3.Database(file);
+	// db.serialize(() => {
+	// 	db.each(`SELECT V.name, V.id 
+ //            FROM V, P
+ //            WHERE V.id=P.id AND P.participant=(?)`,[Name], function(err, row) {
 	    		
-	    		if (err) {
-	    			return console.error(err.message);
-	    		}
-	    		data['row'].push( {'name':row.name, 'id':row.id} )
-	    		//data['row'].push( {"name":'漢堡', "id":'100'} );
-	    		console.log("name: "+row.name+" id: "+row.id);
+	//     		if (err) {
+	//     			return console.error(err.message);
+	//     		}
+	//     		data['row'].push( {'name':row.name, 'id':row.id} )
+	//     		//data['row'].push( {"name":'漢堡', "id":'100'} );
+	//     		console.log("name: "+row.name+" id: "+row.id);
 
-	    });
-	});
-	db.close();
+	//     });
+	// });
+	// db.close();
 	
 	//var data = {row:[{"name":'漢堡', "id":'100'}, {"name":'西瓜', "id":'300'}]}
     //res.render("calendar", data);
-    res.sendFile(__dirname+"calendar\\calendar.html");
+    res.sendFile(resolve('calendar'));
 });
 
 app.get('/create', function(req, res) {
-    res.sendFile(__dirname+"calendar\\create.html");
+    res.sendFile(resolve('create'));
 });
 
 app.get('/bill', function(req, res) {
@@ -104,8 +106,9 @@ app.get('/bill', function(req, res) {
 
 	//var data = {name:"西子灣", row:[ {"matter":'漢堡', "price":'100'}, {"matter":'西瓜', "price":'300'} ]}
     //res.render("bill", data);
-    res.sendFile(__dirname+"calendar\\bill.html");
+    res.sendFile(resolve(bill));
 });
+
 
 app.post('/vote', function(req, res) {
 	var Datapicker = req.body.Datapicker;
@@ -179,5 +182,6 @@ app.post('/regist', function(req, res) {
 app.get('/send-id', function(req, res) {
     res.json({id: myLiffId});
 });
+
 
 app.listen(port, () => console.log(`app listening on port ${port}!`));
