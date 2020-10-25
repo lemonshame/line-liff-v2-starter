@@ -106,7 +106,7 @@ app.get('/bill', function(req, res) {
 
 	//var data = {name:"西子灣", row:[ {"matter":'漢堡', "price":'100'}, {"matter":'西瓜', "price":'300'} ]}
     //res.render("bill", data);
-    res.sendFile(resolve(bill));
+    res.sendFile(resolve("bill"));
 });
 
 
