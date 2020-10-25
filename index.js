@@ -20,7 +20,7 @@ if(!exists) {
 	console.log("No DB Found.");
 }
 
-var sqlite3 = require("sqlite3").verbose();
+// var sqlite3 = require("sqlite3").verbose();
 
 // var __dirname = "C:\\Users\\CJLin\\Desktop\\Calendar\\"
 
