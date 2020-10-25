@@ -4,7 +4,6 @@ const port = process.env.PORT || 5000;
 const myLiffId = process.env.MY_LIFF_ID;
 const path = require('path')
 
-app.use(express.static('public'));
 
 var bodyParser = require("body-parser");
 
@@ -26,15 +25,16 @@ if(!exists) {
 
 app.use(bodyParser.urlencoded({extended:true}))
 
-app.use(express.static('public'));
 
 
 
 const resolve = (page) => path.join(__dirname, 'calendar', `${page}.html`)
 
-
-
-
+app.get('/', (req, res) => {
+	console.log('enter home page, redirect to calendar')
+	res.redirect('/calendar')
+})
+app.use(express.static('public'));
 
 app.get('/calendar', function(req, res) {
 	
